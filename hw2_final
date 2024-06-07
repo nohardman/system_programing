@@ -1,0 +1,166 @@
+// Assignment 2 - Efficient C Programming
+// System Programming, DGIST, Prof. Yeseong Kim
+// 
+// YOU WILL TURN IN THIS FILE.
+// Read the provided instruction carefully.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "bmplib.h"
+#include "hw2.h"
+
+// This implementation is simply copied from "main.c".
+// Your job is to modify and optimize it for better performance!
+
+void filter_optimized(void* args[]) {
+    register int width = *(int*)args[0];
+    register int height = *(int*)args[1];
+    register Pixel* input = args[2];
+    Pixel* output = args[3];
+    register float* filter = args[4];
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            	
+		
+            	register float r = 0;
+	    	register float g = 0;	
+	    	register float b = 0;
+
+
+		int yIndex;
+		int xIndex;
+
+		register Pixel p;
+		if ((y - 1) >= 0){
+			
+			yIndex = y + -1;
+
+			if ((x - 1) >= 0){
+
+				xIndex = x + -1;
+				
+				p = input[xIndex + yIndex * width];
+            			r += p.r * filter[0];
+            			g += p.g * filter[0];
+            			b += p.b * filter[0];
+			}
+	
+			
+			xIndex = x;
+			
+			p = input[xIndex + yIndex * width];
+	       	     	r += p.r * filter[1];
+	            	g += p.g * filter[1];
+	            	b += p.b * filter[1];
+
+	
+
+			if((x + 1) < width){
+				xIndex = x + 1;
+			
+				p = input[xIndex + yIndex * width];
+	            		r += p.r * filter[2];
+	            		g += p.g * filter[2];
+	            		b += p.b * filter[2];
+			}
+
+		}
+
+
+		
+		yIndex = y;
+
+		
+		if ((x - 1) >= 0){
+
+			xIndex = x + -1;
+			
+			p = input[xIndex + yIndex * width];
+            		r += p.r * filter[3];
+            		g += p.g * filter[3];
+            		b += p.b * filter[3];
+		}
+
+
+		
+		xIndex = x;
+		
+		p = input[xIndex + yIndex * width];
+            	r += p.r * filter[4];
+            	g += p.g * filter[4];
+            	b += p.b * filter[4];
+
+
+
+		if((x + 1) < width){
+			xIndex = x + 1;
+				
+			p = input[xIndex + yIndex * width];
+            		r += p.r * filter[5];
+            		g += p.g * filter[5];
+            		b += p.b * filter[5];
+		}
+
+
+
+		if((y + 1) < height){
+			yIndex = y + 1;
+	
+			if ((x - 1) >= 0){
+	
+				xIndex = x - 1;
+				
+				p = input[xIndex + yIndex * width];
+	            		r += p.r * filter[6];
+	            		g += p.g * filter[6];
+	            		b += p.b * filter[6];
+			}
+
+
+
+		
+			xIndex = x;
+			
+			p = input[xIndex + yIndex * width];
+        	    	r += p.r * filter[7];
+        	    	g += p.g * filter[7];
+            		b += p.b * filter[7];
+
+
+
+			if((x + 1) < width){
+				xIndex = x + 1;
+				
+				p = input[xIndex + yIndex * width];
+            			r += p.r * filter[8];
+            			g += p.g * filter[8];
+            			b += p.b * filter[8];
+			}
+		}
+
+
+		Pixel p_;
+		
+		r = r < 0 ? 0 : (r > 255 ? 255 : r);
+    		g = g < 0 ? 0 : (g > 255 ? 255 : g);
+    		b = b < 0 ? 0 : (b > 255 ? 255 : b);
+	    	//printf("r: %f, g: %f, b: %f\n", r, g, b);
+		p_.r = (unsigned char)r;
+    		p_.g = (unsigned char)g;
+    		p_.b = (unsigned char)b;
+
+
+            	output[x+y*width] = p_;
+
+
+            
+
+	
+            
+        }
+    }
+
+}
